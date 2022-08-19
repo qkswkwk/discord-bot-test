@@ -23,6 +23,7 @@ async def on_member_join(member):
     msg = "ㅎㅇ ㅋㅋ 님머임"
     await member.send(msg) #개인 DM으로 보내기
     channel = bot.get_channel('1007189181631561741')
+    await channel.send(msg) #여기가 문제임
 
 @bot.command(aliases=['안녕','hi','안녕하세요']) #!hello 치면 대답
 async def hello(ctx):
