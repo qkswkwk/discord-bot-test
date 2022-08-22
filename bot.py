@@ -5,7 +5,7 @@ import random
 
 intents = discord.Intents.all()
 intents.members = True
-game = discord.Game("VALORANT") #봇 상태 지정
+game = discord.Game("방구뿡뿡띠") #봇 상태 지정
 bot = commands.Bot(command_prefix='!', intents = intents)
  
 @bot.event #봇 온라인
@@ -20,10 +20,17 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_member_join(member):
+    chans=member.guild.text_channels
     msg = "ㅎㅇ ㅋㅋ 님머임"
     await member.send(msg) #개인 DM으로 보내기
-    channel = bot.get_channel('1007189181631561741')
-    await channel.send(msg) #여기가 문제임
+    channel = bot.get_channel([i.id for i in chans][0]) #숫자로 채널 지정
+    await channel.send(msg) # channel에 보내기
+
+@bot.event
+async def on_member_remove(member):
+    msg = "바보간다 ㅋㅋ"
+    channel = bot.get_channel([i.id for i in chans][0])
+    await channel.send(msg)
 
 @bot.command(aliases=['안녕','hi','안녕하세요']) #!hello 치면 대답
 async def hello(ctx):
@@ -56,4 +63,4 @@ async def 도움(ctx):
     embed.set_image(url="https://cdn.discordapp.com/attachments/420880499704332290/1010172441710051378/d78a5e2c-4cc4-4b22-89d6-9786c7bc2253.jpg")
     await ctx.send(embed=embed)
 
-bot.run('token')
+bot.run('MTAwNzE4ODY1MDQ1NjUyMjc2Mw.GJPvrD.nIB2O9oTw-hKX5fQ8qUp3IFQ0I3rJ9LfYTwalY')
