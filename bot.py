@@ -63,4 +63,4 @@ async def 도움(ctx):
     embed.set_image(url="https://cdn.discordapp.com/attachments/420880499704332290/1010172441710051378/d78a5e2c-4cc4-4b22-89d6-9786c7bc2253.jpg")
     await ctx.send(embed=embed)
 
-bot.run('MTAwNzE4ODY1MDQ1NjUyMjc2Mw.GJPvrD.nIB2O9oTw-hKX5fQ8qUp3IFQ0I3rJ9LfYTwalY')
+bot.run('token')
