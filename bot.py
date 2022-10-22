@@ -1,9 +1,9 @@
+from ast import alias
 from ssl import CHANNEL_BINDING_TYPES
 import discord
 from discord.ext import commands
 import random
-import youtube_dl
-from youtubesearchpython import VideosSearch
+import math
 
 intents = discord.Intents.all()
 intents.members = True
@@ -26,14 +26,14 @@ async def on_command_error(ctx, error):
 @bot.event
 async def on_member_join(member):
     chans=member.guild.text_channels
-    msg = "ㅎㅇ ㅋㅋ 님머임"
+    msg = "환영합니다"
     await member.send(msg) #개인 DM으로 보내기
     channel = bot.get_channel([i.id for i in chans][0]) #숫자로 채널 지정
     await channel.send(msg) # channel에 보내기
 
 @bot.event
 async def on_member_remove(member):
-    msg = "바보간다 ㅋㅋ"
+    msg = "잘가요"
     channel = bot.get_channel([i.id for i in chans][0])
     await channel.send(msg)
 
@@ -77,60 +77,37 @@ async def join(ctx):
 async def leave(ctx):
     await ctx.send("<" + str(bot.voice_clients[0].channel) + ">에서 나갑니다.")
     await bot.voice_clients[0].disconnect()
-   
-@bot.command()
-async def song_start(voice, i):
-    try:
-        if not voice.is_playing() and not voice.is_paused():
-            ydl_opts = {'format':'bestaudio'}
-            FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(f'https://www.youtube.com{playlist[i][1]}', download=False)
-                URL = info['formats'][0]['url']
-           
-            voice.play(discord.FFmpegPCMAudio(URL, **FFMPEG_OPTIONS))
-        #voice.play(discord.FFmpegPCMAudio(executable = './ffmpeg-4.4-full_build-shared/bin/ffmpeg.exe', source='./song.mp3'))
-            
-        while voice.is_playing() or voice.is_paused():
-            await asyncio.sloop(0.1)
-    except:
-        return
-       
-@bot.command(aliases = ['p'])
-async def play(ctx,*, keyword):
-    try:
-        result = YoutubeSearch(keyword, max_results=1).to_dict()
-        
-        global playlist
-        playlist.append([results[0]['title'], results[0]['url_suffix']]) #플레이리스트에 노래 추가
-        await ctx.send(embed=set_Embed(title='노래 추가',description=f"{results[0]['title']}"))
-      
-        channel = ctx.author.voice.channel
-        if bot.voice_clients == []:
-            await channel.connect()
-            await ctx.send("<" + str(bot.voice_clients[0].channel) + ">에 들어갑니다.")
-        voice = bot.voice_clients[0]
-        
-        if not voice.is_playing() and not voice.is_paused():
-            global i
-            i = 0
-            while True:
-                await song_start(voice, i)
-                if loop:
-                    if i < len(playlist) - 1:
-                        i = i + 1
-                    else:
-                        i = 0
-                    continue
-                elif i < len(playlist) - 1:
-                    i = i + 1
-                    continue
-                playlist = [[]]
-                break
-        #await voice.disconnect()
-    except:
-        await ctx.send("Play Error")
-      
+    
+@bot.command(aliases=['사인'])
+async def sin(ctx, number:int):
+    await ctx.send(f"sin{number} = {round(math.sin(math.radians(number)), 2)}")
+
+@bot.command(aliases=["코사인"])
+async def cos(ctx, number:int):
+    await ctx.send(f"cos{number} = {round(math.cos(math.radians(number)), 2)}")
+
+@bot.command(aliases=["탄젠트"])
+async def tan(ctx, number:int):
+    await ctx.send(f"tan{number} = {round(math.tan(math.radians(number)), 2)}")
+
+@bot.command(aliases=["역사인"])
+async def asin(ctx, number:float):
+    if number<-1 or number>1:
+        await ctx.send("구간을 [-1, 1]로 지정해주세요")
+    else:
+        await ctx.send(f"{number} = sin{int(round(math.degrees(math.asin(number)), 0))}")
+
+@bot.command(aliases=["역코사인"])
+async def acos(ctx, number:float):
+    if number<-1 or number>1:
+        await ctx.send("구간을 [-1, 1]로 지정해주세요")
+    else:
+        await ctx.send(f"{number} = cos{int(round(math.degrees(math.acos(number)), 0))}")
+
+@bot.command(aliases=["역탄젠트"])
+async def atan(ctx, number:int):
+    await ctx.send(f"{number} = tan{int(round(math.degrees(math.atan(number)), 0))}")
+
 @bot.command(aliases=['도움말','h'])
 async def 도움(ctx):
     embed = discord.Embed(title="bot test", description="반자자짱", color=0x4432a8)
@@ -139,9 +116,9 @@ async def 도움(ctx):
     embed.add_field(name="3. 앵무새", value="!앵무새 [따라할 말]", inline=False)
     embed.add_field(name="4. 핑 확인", value="!핑", inline=False)
     embed.add_field(name="5. 음성채널 입장/퇴장", value="!join / !leave (초대자가 입장된 상태에만 가능)", inline=False)
-    embed.add_field(name="6. 음악", value="!play [Youtube URL] : 음악을 재생\n!pause : 일시정지\n!resume : 다시 재생\n!stop : 중지", inline=False)
+    embed.add_field(name="6. 삼각함수 계산", value="!사인, !코사인, !탄젠트, !역사인, !역코사인, !역탄젠트", inline=False)
     embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/420880499704332290/1010172441710051378/d78a5e2c-4cc4-4b22-89d6-9786c7bc2253.jpg")
     embed.set_image(url="https://cdn.discordapp.com/attachments/420880499704332290/1010172441710051378/d78a5e2c-4cc4-4b22-89d6-9786c7bc2253.jpg")
     await ctx.send(embed=embed)
 
-bot.run('token')
+bot.run('token is here')
